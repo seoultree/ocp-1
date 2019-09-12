@@ -4,6 +4,6 @@ vcenter_password: password
 datacenter_name: LAB
 cluster_name: SOUTH
 vcenter_folder: nonprod1
-vm_name: "{{ 88888888 | random | to_uuid }}""
+vm_name: "{{ 88888888 | random | to_uuid }}"
 vm_cpu: 8
 vm_ram: 32768
