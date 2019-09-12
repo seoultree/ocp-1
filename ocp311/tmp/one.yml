@@ -1,0 +1,3 @@
+---
+  - import_playbook: vmware.yml
+  - import_playbook: ocp.yml

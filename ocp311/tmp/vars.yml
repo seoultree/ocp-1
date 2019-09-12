@@ -1,0 +1,8 @@
+vcenter_ip: 172.16.20.10
+vcenter_username: icp
+vcenter_password: ibmcloud
+datacenter_name: LAB
+cluster_name: SOUTH
+vcenter_folder: nonprod1
+vm_cpu: 8
+vm_ram: 32768

@@ -1,0 +1,16 @@
+---
+- name: Install OCP
+  hosts: newvm
+  vars:
+  tasks:
+  - debug: msg="Reverse DNS is {{ lookup('dig', '{{inventory_hostname}}/PTR') }}"
+
+  - name: Change the hostname to our standard
+    hostname:
+      name="{{ lookup('dig', '{{inventory_hostname}}/PTR') | regex_replace("\.$","") }}"
+
+  #- name: Reboot VM
+  #  shell: shutdown -r 0
+
+  #- name: Waiting for server to come back up
+  #  local_action: wait_for host="{{ ansible_fqdn }}" port=22 state=started

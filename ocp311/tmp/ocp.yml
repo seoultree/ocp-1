@@ -1,0 +1,88 @@
+---
+- name: Install OCP
+  hosts: newvm
+  vars:
+  tasks:
+  - name: Change the hostname to our standard
+    hostname:
+      name="{{ lookup('dig', '{{inventory_hostname}}/PTR') | regex_replace("\.$","") }}"
+
+  - name: Copy ose.repo
+    copy:
+      src: ose.repo
+      dest: /etc/yum.repos.d/ose.repo
+
+  - name: Copy htpasswd.template
+    copy:
+      src: htpasswd.openshift
+      dest: /tmp/htpasswd.openshift
+
+  - name: Install OCP Base
+    yum:
+      name: "{{ packages }}"
+    vars:
+      packages:
+      - wget
+      - git
+      - net-tools
+      - bind-utils
+      - yum-utils
+      - iptables-services
+      - bridge-utils
+      - bash-completion
+      - kexec-tools
+      - sos
+      - psacct
+      - openshift-ansible
+      - docker-1.13.1
+
+  - name: Add insecure registry
+    blockinfile:
+      path: /etc/containers/registries.conf
+      block: |
+        [registries.insecure]
+        registries = ["ocpcontrol.cloud.lab:5000"]
+
+  - name: Rm ssh key
+    shell: rm -rf ~/.ssh/id_rsa*
+ 
+  - name: Generate ssh key
+    command: ssh-keygen -t rsa -f ~/.ssh/id_rsa -N ""
+ 
+  - name: Add ssh key authentication
+    shell: cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+
+  - name: Chmod authorized_keys
+    file:
+      path: ~/.ssh/authorized_keys
+      mode: '0600'
+
+  - name: Copy ssh_config
+    template:
+      src: ssh_config
+      dest: ~/.ssh/config
+
+  - name: upgrade all packages
+    yum: name='*' state=latest
+
+  - name: wait for 20 seconds
+    pause:
+      seconds: 20
+
+  - name: Wait for computer to reboot...
+    wait_for_connection:
+      connect_timeout: 20
+      sleep: 5
+      delay: 5
+      timeout: 60
+
+  - name: Copy ansible.hosts 
+    template:
+      src: ocp.hosts
+      dest: /etc/ansible/hosts 
+
+  - name: Install pre-req
+    command: ansible-playbook /usr/share/ansible/openshift-ansible/playbooks/prerequisites.yml
+
+  - name: Deploy cluster
+    command: ansible-playbook /usr/share/ansible/openshift-ansible/playbooks/deploy_cluster.yml

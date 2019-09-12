@@ -1,0 +1,44 @@
+---
+- name: Create a VM from a template
+  hosts: localhost
+  vars_files:
+  - vars.yml
+  gather_facts: no
+  tasks:
+  - name: Clone the template
+    vmware_guest:
+      hostname: "{{ vcenter_ip }}"
+      username: "{{ vcenter_username }}"
+      password: "{{ vcenter_password }}"
+      validate_certs: False
+      name: "{{ vm_name }}"
+      template: rhel75t
+      datacenter: "{{ datacenter_name }}"
+      folder: "{{ vcenter_folder }}"
+      state: poweredon
+      cluster: "{{ cluster_name }}"
+      customization:
+       hostname: "{{ vm_name }}"
+      hardware:
+       memory_mb: "{{ vm_ram }}"
+       num_cpus: "{{ vm_cpu }}"
+      networks:
+      - name: VLAN101
+        type: dhcp
+        start_connected: true
+      wait_for_ip_address: yes
+      state: present
+    register: newvm
+
+  - name: IP address info
+    debug:
+      msg: "{{ newvm.instance.ipv4 }}"
+
+  - name: Register dummy host with variable
+    add_host:
+      name: "{{ newvm.instance.ipv4 }}"
+      ansible_password: passw0rd
+      ansible_ssh_common_args: "-oPubkeyAuthentication=no -oStrictHostKeyChecking=no"
+      groups:
+      - newvm
+

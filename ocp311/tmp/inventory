@@ -1,0 +1,5 @@
+[vmware]
+localhost
+
+[newvm]
+172.16.101.151 ansible_password="passw0rd"  ansible_ssh_common_args="-oPubkeyAuthentication=no -oStrictHostKeyChecking=no"

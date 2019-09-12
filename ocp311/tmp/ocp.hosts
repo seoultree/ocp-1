@@ -1,0 +1,24 @@
+[OSEv3:children]
+masters
+nodes
+etcd
+
+[masters]
+{{ inventory_hostname }}
+
+[etcd]
+{{ inventory_hostname }}
+
+
+[nodes]
+{{ inventory_hostname }} openshift_node_group_name='node-config-all-in-one'
+
+[OSEv3:vars]
+ansible_ssh_user=root
+ansible_become=no
+openshift_deployment_type=openshift-enterprise
+openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 'challenge': 'true', 'kind': 'HTPasswdPasswordIdentityProvider'}]
+openshift_master_htpasswd_file=/tmp/htpasswd.openshift
+openshift_docker_insecure_registries=ocpcontrol.cloud.lab:5000
+oreg_url=ocpcontrol.cloud.lab:5000/openshift3/ose-${component}:latest
+openshift_examples_modify_imagestreams=true

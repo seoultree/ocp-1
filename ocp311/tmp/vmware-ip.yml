@@ -1,0 +1,50 @@
+---
+- name: Create a VM from a template
+  hosts: localhost
+  vars:
+    vcenter_ip: 172.16.20.10
+    vcenter_username: icp
+    vcenter_password: ibmcloud
+    datacenter_name: LAB
+    cluster_name: SOUTH
+    vcenter_folder: nonprod1
+    vm_name: testvm5
+    vm_ip: 172.16.101.15
+    vm_netmask: 255.255.255.0
+    vm_gateway: 172.16.101.1
+    vm_dns: 172.16.101.250
+  gather_facts: no
+  tasks:
+  - name: Clone the template
+    vmware_guest:
+      hostname: "{{ vcenter_ip }}"
+      username: "{{ vcenter_username }}"
+      password: "{{ vcenter_password }}"
+      validate_certs: False
+      name: "{{ vm_name }}"
+      template: rhel75t
+      datacenter: "{{ datacenter_name }}"
+      folder: "{{ vcenter_folder }}"
+      state: poweredon
+      cluster: "{{ cluster_name }}"
+      customization:
+       hostname: "{{ vm_name }}"
+       dns_servers:
+       - "{{ vm_dns }}"
+      hardware:
+       memory_mb: 8192
+       num_cpus: 4
+      networks:
+      - name: VLAN101
+        type: static
+        start_connected: true
+        ip: "{{ vm_ip }}"
+        netmask: "{{ vm_netmask }}"
+        gateway: "{{ vm_gateway }}"
+      wait_for_ip_address: yes
+      state: present
+    register: newvm
+
+  - name: IP address info
+    debug:
+      msg: "{{ newvm }} "
