@@ -16,7 +16,6 @@
       template: rhel75t
       datacenter: "{{ datacenter_name }}"
       folder: "{{ vcenter_folder }}"
-      state: poweredon
       cluster: "{{ cluster_name }}"
       customization:
        hostname: "{{ vm_name }}"
@@ -28,7 +27,7 @@
         type: dhcp
         start_connected: true
       wait_for_ip_address: yes
-      state: present
+      state: poweredon
     register: newvm
 
   - name: IP address info
