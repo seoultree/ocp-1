@@ -3,6 +3,7 @@
   hosts: localhost
   vars_files:
   - vars.yml
+  - secret.yml
   gather_facts: no
   tasks:
   - name: Clone the template
