@@ -2,6 +2,8 @@
 masters
 nodes
 etcd
+nfs
+lb
 
 [masters]
 {{ inventory_hostname }}
@@ -9,6 +11,11 @@ etcd
 [etcd]
 {{ inventory_hostname }}
 
+[nfs]
+{{ inventory_hostname }}
+
+[lb]
+{{ inventory_hostname }}
 
 [nodes]
 {{ inventory_hostname }} openshift_node_group_name='node-config-all-in-one'
