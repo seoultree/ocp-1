@@ -5,7 +5,7 @@
   tasks:
   - name: Change the hostname to our standard
     hostname:
-      name="{{ lookup('dig', '{{inventory_hostname}}/PTR') | regex_replace("\.$","") }}"
+      name="{{ lookup('dig', '{{inventory_hostname}}/PTR', wantlist=True) | first | regex_replace("\.$","") }}"
 
   - name: Copy ose.repo
     copy:
