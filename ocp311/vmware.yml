@@ -36,7 +36,8 @@
 
   - name: Register dummy host with variable
     add_host:
-      name: "{{ newvm.instance.ipv4 }}"
+      #name: "{{ newvm.instance.ipv4 }}"
+      name: "{{ lookup('dig', '{{ newvm.instance.ipv4 }}/PTR', wantlist=True) | first | regex_replace("\.$","") }}"
       ansible_password: passw0rd
       ansible_ssh_common_args: "-oPubkeyAuthentication=no -oStrictHostKeyChecking=no"
       groups:
