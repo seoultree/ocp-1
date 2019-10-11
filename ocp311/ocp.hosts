@@ -29,6 +29,9 @@ openshift_master_htpasswd_file=/tmp/htpasswd.openshift
 openshift_docker_insecure_registries=ocpcontrol.cloud.lab:5000
 oreg_url=ocpcontrol.cloud.lab:5000/openshift3/ose-${component}:latest
 openshift_examples_modify_imagestreams=true
+
+openshift_master_api_port=443  
+openshift_master_console_port=443
 #openshift_master_cluster_hostname=vm100.cloud.lab
 #openshift_master_cluster_public_hostname=vm100.cloud.lab
 openshift_master_default_subdomain=apps.{{ inventory_hostname }}
